@@ -43,12 +43,12 @@ input[type=text],input[type=number]{font:inherit;font-size:16px;color:var(--fg);
 .edit-btn[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 
 /* ledger */
-.ledger{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ledger{display:flex;flex-direction:column;gap:14px}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 72px 44px 44px 44px 44px;align-items:center;column-gap:6px}
-.head{padding:10px 8px;font-size:8.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--fg);border-bottom:1.5px solid #CFCFCF}
+.head{padding:10px 8px;font-size:8.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--fg);border-bottom:1px solid var(--line);color:var(--muted)}
 .head span:not(:first-child){text-align:center}
-.cat{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:12px 10px 6px;background:var(--accent-soft);border-top:1px solid var(--line)}
-.cat:first-of-type{border-top:0}
+.cat{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:13px 12px 11px;background:var(--accent-soft)}
 .cat b{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 .cat small{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
 .item{padding:7px 8px;border-top:1px solid var(--line)}
@@ -64,7 +64,7 @@ input[type=text],input[type=number]{font:inherit;font-size:16px;color:var(--fg);
 .box{display:grid;place-items:center}
 .box input{appearance:none;-webkit-appearance:none;width:24px;height:24px;margin:0;border:1.5px solid #BDBDBD;border-radius:5px;background:var(--surface);cursor:pointer;display:grid;place-items:center;transition:background .12s,border-color .12s}
 .box input::after{content:"";width:5px;height:10px;border-right:2.5px solid var(--accent-ink);border-bottom:2.5px solid var(--accent-ink);transform:rotate(45deg) translate(-1px,-1px);opacity:0}
-.box input:checked{background:var(--accent);border-color:var(--accent)}
+.box input:checked{background:#AE6674;border-color:#AE6674}
 .box input:checked::after{opacity:1}
 @media (prefers-reduced-motion:reduce){.box input{transition:none}}
 
@@ -109,7 +109,8 @@ input[type=text],input[type=number]{font:inherit;font-size:16px;color:var(--fg);
 
 /* edit mode rows */
 .erow{display:grid;grid-template-columns:minmax(0,1fr) 108px 34px;gap:6px;align-items:center;padding:7px 10px;border-top:1px solid var(--line)}
-.ecat{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:6px;padding:10px;background:var(--accent-soft);border-top:1px solid var(--line)}
+.ecat{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:6px;padding:10px;background:var(--accent-soft)}
+.sec>.addline:last-child{border-top:1px solid var(--line)}
 .ecat input{font-weight:700}
 .del{background:none;border:0;color:var(--fg);font-size:20px;line-height:1;padding:4px}
 .addline{background:none;border:0;color:var(--accent);font-weight:700;font-size:13px;padding:10px;text-align:left;border-top:1px solid var(--line);width:100%}
@@ -123,7 +124,7 @@ input[type=text],input[type=number]{font:inherit;font-size:16px;color:var(--fg);
 .t.pay b{font-size:14px}
 .t.wide{grid-column:1/-1;padding-top:10px;border-top:1px solid var(--line)}
 .t.wide b{font-size:22px}
-.t.wide b.neg{text-decoration:underline;text-underline-offset:4px}
+.t.wide b.neg{color:#D93636;text-decoration:underline;text-underline-offset:4px}
 .legend{font-size:12px;color:var(--muted);line-height:1.5}
 .danger-link{background:none;border:0;color:var(--fg);text-decoration:underline;font-weight:600;font-size:13px;padding:4px 0;justify-self:start}
 </style>
@@ -194,13 +195,15 @@ const keyOf=(y,m)=>y+'-'+String(m+1).padStart(2,'0');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const TEMPLATE=[
- ['House Bills',[['Rent',10000],['Electric Bill',4000],['Internet',850],['Laundry',1000],['Lashes',1000],['Grocery',3000],['Food Delivery / Budget',6000],['Medicine Replenish',1000],['Furniture Shopping',5000],['Car',8000],['Gas',2000],['Parking',5000]]],
- ['Debt',[['Monthly Saving',1500],['Bank Debt',1800]]],
- ['Self Care',[['Facial for 2',2000],['Kilay Threading',300],['Upper Lip Threading',300],['Underarm laser + whitening',3100],['Derma Consultation',1500],['Derma Medications',3500],['Shopping',2000],['Vape',2000]]],
- ['Date',[['Date 1',2500],['Date 2',2500],['Date 3',2500]]],
- ['Others',[['',0],['',0],['',0],['',0],['',0]]]
+ ['Bills',[['Rent',10000],['Electric Bill',3000],['Internet',850],['Laundry',1000],['Lashes',1000],['Grocery',3000],['Medicine Replenish',1000],['Phil Health',1000]]],
+ ['Food Delivery Budget',[['Weekend 1',1500],['Weekend 2',1500],['Weekend 3',1500]]],
+ ['Debt',[['Monthly Saving',1500],['Bank Debt',1800],['Credit Card',700]]],
+ ['Self Care',[['Facial for 2',2000],['Kilay Threading',300],['Upper Lip Threading',300],['Shopping',2000],['Vape',2000]]],
+ ['Date',[['',2500],['',2500],['',2500]]],
+ ['Transportation',[['',0],['',0],['',0],['',0],['',0],['',0],['',0],['',0],['',0],['',0]]],
+ ['Others',[['',0],['',0],['',0],['',0],['',0],['',0],['',0],['',0]]]
 ];
-const othersGroup=()=>({id:uid(),name:'Others',items:[1,2,3,4,5].map(n=>({id:uid(),name:'',budget:0,actual:'',debit:false,credit:false,paid:false}))});
+const othersGroup=()=>({id:uid(),name:'Others',items:[1,2,3,4,5,6,7,8].map(n=>({id:uid(),name:'',budget:0,actual:'',debit:false,credit:false,paid:false}))});
 const blankItem=(name,budget)=>({id:uid(),name,budget,actual:'',debit:false,credit:false,gotyme:false,paid:false});
 const fromTemplate=()=>({groups:TEMPLATE.map(([n,items])=>({id:uid(),name:n,items:items.map(([a,b])=>blankItem(a,b))}))});
 
@@ -208,8 +211,56 @@ let state={months:{}};
 try{const raw=localStorage.getItem(KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
 if(!state.othersAdded){Object.values(state.months).forEach(m=>{if(!m.groups.some(g=>g.name==='Others'))m.groups.push(othersGroup());});state.othersAdded=true;save();}
-const isFree=g=>/^(others|transportation)$/i.test(String(g.name).trim());
+const isFree=g=>/^(others|transportation|date)$/i.test(String(g.name).trim());
 if(!state.namesBlanked){Object.values(state.months).forEach(m=>m.groups.forEach(g=>g.items.forEach(i=>{if(i.name==='New item'||(/^others$/i.test(g.name.trim())&&/^Others \d+$/.test(i.name)))i.name='';})));state.namesBlanked=true;save();}
+/* one-time update of already-saved months to the new item list */
+if(!state.v3){
+  const nm=i=>String(i.name).trim();
+  Object.values(state.months).forEach(m=>{
+    const fg=re=>m.groups.find(g=>re.test(g.name.trim()));
+    const b=fg(/^(house bills|bills)$/i);
+    if(b){
+      b.name='Bills';
+      b.items=b.items.filter(i=>!/^(furniture shopping|car|gas|parking)$/i.test(nm(i)));
+      b.items.forEach(i=>{const n=nm(i).toLowerCase();if(n==='electric bill')i.budget=3000;if(n==='food delivery / budget')i.budget=5000;});
+      if(!b.items.some(i=>/^phil ?health$/i.test(nm(i)))){
+        const k=b.items.findIndex(i=>/^medicine replenish$/i.test(nm(i)));
+        b.items.splice(k>=0?k+1:b.items.length,0,blankItem('Phil Health',1000));
+      }
+    }
+    const d=fg(/^debt$/i);
+    if(d&&!d.items.some(i=>/^credit card$/i.test(nm(i))))d.items.push(blankItem('Credit Card',700));
+    const sc=fg(/^self care$/i);
+    if(sc)sc.items=sc.items.filter(i=>!/^(derma consultation|derma medications|underarm laser \+ whitening)$/i.test(nm(i)));
+    const dt=fg(/^date$/i);
+    if(dt)dt.items.forEach(i=>{if(/^date \d+$/i.test(nm(i)))i.name='';});
+    let t=fg(/^transportation$/i);
+    if(!t){t={id:uid(),name:'Transportation',items:[]};const di=m.groups.indexOf(dt);m.groups.splice(di>=0?di+1:m.groups.length,0,t);}
+    while(t.items.length<10)t.items.push(blankItem('',0));
+  });
+  state.v3=true;save();
+}
+
+if(!state.v4){
+  Object.values(state.months).forEach(m=>{
+    const b=m.groups.find(g=>/^(house bills|bills)$/i.test(g.name.trim()));
+    if(b)b.items=b.items.filter(i=>!/^food delivery( ?\/ ?budget)?$/i.test(String(i.name).trim()));
+    if(!m.groups.some(g=>/^food delivery budget$/i.test(g.name.trim()))){
+      const fd={id:uid(),name:'Food Delivery Budget',items:[1,2,3].map(n=>blankItem('Weekend '+n,1500))};
+      const bi=m.groups.indexOf(b);m.groups.splice(bi>=0?bi+1:0,0,fd);
+    }
+  });
+  state.v4=true;save();
+}
+
+if(!state.v5){
+  Object.values(state.months).forEach(m=>{
+    const o=m.groups.find(g=>/^others$/i.test(g.name.trim()));
+    if(o)while(o.items.length<8)o.items.push(blankItem('',0));
+  });
+  state.v5=true;save();
+}
+
 
 const now=new Date();
 let cur=keyOf(now.getFullYear(),now.getMonth());
@@ -249,20 +300,19 @@ function render(){
   const m=getMonth(cur), L=$('ledger');
   if(view==='money')renderMoney();
   if(editing){
-    L.innerHTML=m.groups.map(g=>`
+    L.innerHTML=m.groups.map(g=>`<div class="sec">
       <div class="ecat"><input type="text" id="gn-${g.id}" data-gname="${g.id}" value="${esc(g.name)}" aria-label="Category name">
         <button class="del" data-delg="${g.id}" aria-label="Delete category">×</button></div>
       ${g.items.map(i=>`<div class="erow">
         <input type="text" id="in-${i.id}" data-iname="${i.id}" value="${esc(i.name)}" placeholder="Item name" aria-label="Item name">
         <input type="number" inputmode="decimal" id="ib-${i.id}" data-ibudget="${i.id}" value="${i.budget}" class="num" aria-label="Budget">
         <button class="del" data-deli="${i.id}" aria-label="Delete item">×</button></div>`).join('')}
-      <button class="addline" data-addi="${g.id}">+ Add item to ${esc(g.name)}</button>`).join('')+
-      `<button class="addline" id="addGroup" style="border-top:2px solid var(--line)">+ Add category</button>`;
+      <button class="addline" data-addi="${g.id}">+ Add item to ${esc(g.name)}</button></div>`).join('')+
+      `<button class="addline" id="addGroup" style="border:1.5px dashed #CFCFCF;border-radius:16px;text-align:center">+ Add category</button>`;
   } else {
-    L.innerHTML=`<div class="grid head"><span>Item</span><span>Actual</span><span>Debit</span><span>Credit</span><span>GoTyme</span><span>Paid</span></div>`+
-      m.groups.map(g=>{
+    L.innerHTML=m.groups.map(g=>{
         const b=g.items.reduce((a,i)=>a+(+i.budget||0),0), act=g.items.reduce((a,i)=>a+val(i),0);
-        return `<div class="cat"><b>${esc(g.name)}</b><small id="gs-${g.id}">${fmt(act)} / ${fmt(b)}</small></div>`+
+        return `<div class="sec"><div class="cat"><b>${esc(g.name)}</b><small id="gs-${g.id}">${fmt(act)} / ${fmt(b)}</small></div><div class="grid head"><span>Item</span><span>Actual</span><span>Debit</span><span>Credit</span><span>GoTyme</span><span>Paid</span></div>`+
         g.items.map(i=>`<div class="grid item${i.paid?' paid':''}" id="row-${i.id}">
           <div class="name">${isFree(g)?`<input type="text" class="nameinput" id="nm-${i.id}" data-iname="${i.id}" value="${esc(i.name)}" placeholder="Type here" aria-label="Item name">`:`<div>${esc(i.name)}</div>`}<small>${fmt(+i.budget||0)}</small></div>
           <input class="actual" type="text" inputmode="decimal" id="a-${i.id}" data-actual="${i.id}" value="${esc(fmtAmt(i.actual))}" placeholder="—" aria-label="Actual for ${esc(i.name)}">
@@ -270,7 +320,7 @@ function render(){
           <label class="box"><input type="checkbox" class="c" id="c-${i.id}" data-flag="credit" data-id="${i.id}" ${i.credit?'checked':''} aria-label="Credit"></label>
           <label class="box"><input type="checkbox" class="g" id="g-${i.id}" data-flag="gotyme" data-id="${i.id}" ${i.gotyme?'checked':''} aria-label="GoTyme"></label>
           <label class="box"><input type="checkbox" class="p" id="p-${i.id}" data-flag="paid" data-id="${i.id}" ${i.paid?'checked':''} aria-label="Paid"></label>
-        </div>`).join('');
+        </div>`).join('')+`</div>`;
       }).join('');
   }
   $('editBtn').setAttribute('aria-pressed',editing);
